@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.BooksActivity" />
+        <activity android:name=".activity.ColorsActivity" />
+        <activity android:name=".activity.RxJavaSimpleActivity" />
+        <activity android:name=".activity.SchedulerActivity"></activity>
     </application>
 
 </manifest>
