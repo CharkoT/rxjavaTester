@@ -39,7 +39,6 @@ public class SchedulerActivity extends AppCompatActivity {
         configureLayout();
     }
 
-
     public String doSomethingLong() {
         SystemClock.sleep(1000);
         return "Hello";
@@ -55,18 +54,19 @@ public class SchedulerActivity extends AppCompatActivity {
             Observable.fromCallable(callable)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .doOnSubscribe(disposable1 -> {
+                    .doOnSubscribe(disposable1 -> { // subscribe가 진행되기전
                         progressBar.setVisibility(View.VISIBLE);
                         button.setEnabled(false);
                         textView.setText(textView.getText().toString() + "\n" + "Progressbar set visible");
                     }).subscribe(getDisposableObserver());
-
         });
     }
 
     /**
      * Observer
      * Handles the stream of data:
+     * 핸들러를 이런식으로 함수화 시켜서 사용할 수 있다.
+     * android mainthread를 가져와서 사용하기 때문에. 별도의 UI변경을 위한 핸들러가 필요 없다.
      */
     private DisposableObserver<String> getDisposableObserver() {
         return new DisposableObserver<String>() {

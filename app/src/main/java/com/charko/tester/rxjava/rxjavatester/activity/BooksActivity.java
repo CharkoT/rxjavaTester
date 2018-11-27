@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -13,6 +14,7 @@ import com.charko.tester.rxjava.rxjavatester.client.RestClient;
 
 import java.util.List;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -45,12 +47,30 @@ public class BooksActivity extends AppCompatActivity {
 //    }
 
     private void createObservable() {
+        // TODO 식별자 생성 수행할 업무 추가
         Observable<List<String>> booksObservable =
                 Observable.fromCallable(() -> restClient.getFavoriteBooks());
-        disposable = booksObservable.
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(strings -> displayBooks(strings));
+
+//        Flowable<List<String>> booksFlowable = Flowable.
+
+        // TODO 식별자를 사용하여 rx기능 추가
+        disposable = booksObservable
+                .subscribeOn(Schedulers.io())
+                .toFlowable(BackpressureStrategy.BUFFER)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(strings -> displayBooks(strings)); // subscribe - onNext and onComplate, onError등이 사용되어진다.
+
+        disposable = booksObservable
+                .subscribeOn(Schedulers.io())
+                .toFlowable(BackpressureStrategy.BUFFER)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(strings -> { // onNext() 처리
+
+                }, throwable -> { // onError() 처리
+
+                }, () -> { // onCoplete() 처리
+                    Log.e("tag", "test : onComplete");
+                });
     }
 
 
